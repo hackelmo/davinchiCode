@@ -3,31 +3,44 @@ import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
 import styled from "styled-components";
 import Header from "../../components/common/elements/Header";
+
 import GameStart from "./logic/GameStart";
 import NotMyTurn from "./logic/NotMyTurn";
+import myUserBackground from "../../assets/img/myUserBackground.png";
+import otherUserBackground from "../../assets/img/otherUserBackground.png";
+
+import iconSetting from "../../assets/icons/ico_setting.svg";
+import iconVideocam from "../../assets/icons/ico_videocam.svg";
+import iconMic from "../../assets/icons/ico_mic.svg";
+import iconTimer from "../../assets/icons/ico_timer.svg";
+import iconSend from "../../assets/icons/ico_send.svg";
+import backBlack from "../../assets/icons/inGame/back_black.png";
+import backWhite from "../../assets/icons/inGame/back_white.png";
 
 // const socket = io.connect(process.env.REACT_APP_SERVER);
 const socket = io.connect("http://localhost:3002/");
 
 const Game = () => {
   const dispatch = useDispatch();
-  // const { userId, roomId } = useSelector((state) => state.gameSlice);
-  // const [roomId, setRoomId] = useState("");
-  // const [userId, setUserId] = useState("");
-  const createdAt = new Date().toLocaleString();
+
   const [roomId, setRoomInput] = useState("");
   const [userId, setUserInput] = useState("");
   const [myTurn, setMyTurn] = useState(false);
   const [mode, setMode] = useState("lobby");
   // const [centerMode, setCenterMode] = useState("");
 
-  const users = [0, 1, 2, 3];
+  const createdAt = new Date().toLocaleString();
+  const users = [1, 2, 3];
   const people = 4;
 
   const modeGameStart = () => {
     setMode("gameStart");
     console.log("socket.on => gameStart /// self", userId);
     socket.emit("getPlace", { roomId, userId, people }, gameTurn);
+  };
+
+  const gameTurn = (turn) => {
+    console.log("내턴은", turn);
   };
 
   useEffect(() => {
@@ -43,11 +56,6 @@ const Game = () => {
 
     // socket.on("");
   }, [socket]);
-
-  const gameTurn = (turn) => {
-    console.log("내턴은", turn);
-  };
-
   // if (mode === "lobby")
   //   return (
   //     <>
@@ -83,93 +91,118 @@ const Game = () => {
 
   return (
     <>
-      <Header />
-      <Container>
-        <OtherUsers>
-          <OtherUser>
-            <UserInfo>
-              <Camera></Camera>
-              <SelectBtn>선택</SelectBtn>
-            </UserInfo>
-            <NickName>사용자{users[1]}</NickName>
-            <CardArea>
-              <Card />
-              <Card />
-              <Card backgroundColor="white" />
-            </CardArea>
-          </OtherUser>
-          <OtherUser>
-            <UserInfo>
-              <Camera></Camera>
-              <SelectBtn>선택</SelectBtn>
-            </UserInfo>
-            <NickName>사용자{users[2]}</NickName>
-            <CardArea>
-              <Card />
-              <Card backgroundColor="white" />
-              <Card />
-            </CardArea>
-          </OtherUser>
-          <OtherUser>
-            <UserInfo>
-              <Camera></Camera>
-              <SelectBtn>선택</SelectBtn>
-            </UserInfo>
-            <NickName>사용자{users[3]}</NickName>
-            <CardArea>
-              <Card />
-              <Card backgroundColor="white" />
-              <Card backgroundColor="white" />
-            </CardArea>
-          </OtherUser>
-        </OtherUsers>
+      <Background>
+        <Header />
+        <Container>
+          <OtherUsers>
+            {users.map((el, i) => (
+              <OtherUser key={`otheruser${i}`}>
+                <UserInfo>
+                  <Camera>
+                    <SpaceBetween>
+                      <CameraStatus>
+                        <img src={iconMic} />
+                        <img src={iconVideocam} />
+                      </CameraStatus>
+                      {/* <GameStatus>진행중</GameStatus> */}
+                    </SpaceBetween>
+                    <UserName>
+                      <div>다빈치고수</div>
+                    </UserName>
+                  </Camera>
+                  <SelectBtn>지목하기</SelectBtn>
+                </UserInfo>
+                <CardArea>
+                  <Card src={backBlack} />
+                  <Card src={backBlack} />
+                  <Card src={backWhite} />
+                  <Card src={backWhite} />
+                  <Card src={backBlack} />
+                  <Card src={backWhite} />
+                </CardArea>
+              </OtherUser>
+            ))}
+          </OtherUsers>
 
-        <CardBox>
-          <OnGoingStatus>카드를 뽑아주세요</OnGoingStatus>
-          <MiddleField>
-            <GameText>가져올 타일을 선택 해주세요!</GameText>
-            <StBox>{myTurn ? <GameStart /> : <NotMyTurn />}</StBox>
-          </MiddleField>
-        </CardBox>
+          <CardBox>
+            <GameField>
+              <OnGoingStatus>
+                정말정말긴이름인데너무함님이 상대 지목을 진행 중입니다.
+              </OnGoingStatus>
+              {/* <MiddleField>
+                <GameText>가져올 타일을 선택 해주세요!</GameText>
+                <StBox>{myTurn ? <GameStart /> : <NotMyTurn />}</StBox>
+              </MiddleField> */}
+            </GameField>
+            <Timer>
+              <img src={iconTimer} />
+              <TimerBar>
+                <TimeLimit />
+              </TimerBar>
+              <div>남은시간 25초</div>
+            </Timer>
+          </CardBox>
 
-        <Footer>
-          <Left>
-            <Camera></Camera>
-            <BtnList>
-              <button className="material-symbols-outlined">mic</button>
-              <div>|</div>
-              <button className="material-symbols-outlined">
-                videocam_off
-              </button>
-              <div>|</div>
-              <button className="material-symbols-outlined">
-                video_camera_front
-              </button>
-            </BtnList>
-          </Left>
-          <Right>
-            <Chat>
-              <Chatting>
-                <div>사용자1</div>
-                <div>안녕하세요, 레디 부탁합니다</div>
-              </Chatting>
-              <Chatting>
-                <div>사용자2</div>
-                <div>넵 레디요~</div>
-              </Chatting>
-            </Chat>
-            <InputArea>
-              <Input></Input>
-              <InputBtn>보내기</InputBtn>
-            </InputArea>
-          </Right>
-        </Footer>
-      </Container>
+          <Footer>
+            <Left>
+              <Flex>
+                <Camera>
+                  <SpaceBetween>
+                    <CameraStatus>
+                      <img src={iconMic} />
+                      <img src={iconVideocam} />
+                    </CameraStatus>
+                    <GameStatus>진행중</GameStatus>
+                  </SpaceBetween>
+                  <UserName>
+                    <div>내가다이김</div>
+                  </UserName>
+                </Camera>
+                {/* <MyCard>
+                  <MyCardList></MyCardList>
+                </MyCard> */}
+              </Flex>
+              <BtnList>
+                <img src={iconMic} />
+                <div>|</div>
+                <img src={iconVideocam} />
+                <div>|</div>
+                <img src={iconSetting} />
+              </BtnList>
+            </Left>
+            <Right>
+              <Chat>
+                <Chatting>
+                  <div>사용자1</div>
+                  <div>안녕하세요, 레디 부탁합니다</div>
+                </Chatting>
+                <Chatting>
+                  <div>사용자2</div>
+                  <div>넵 레디요~</div>
+                </Chatting>
+              </Chat>
+              <InputArea>
+                <InputBox>
+                  <Input placeholder="채팅을 시작해보세요!" />
+                  <img src={iconSend} />
+                </InputBox>
+              </InputArea>
+            </Right>
+          </Footer>
+        </Container>
+      </Background>
     </>
   );
 };
 
 /////////////네브바
+
+const Background = styled.div`
+  background-image: url("https://uca34f7dca178fca24f56420c13d.previews.dropboxusercontent.com/p/thumb/AByPZLdpGdm3yyXlmNa_S5-GWerUYnmal_9w2oz3n-oYwK03zYvckC5MBnnmOGGFmoweSg1sFzqzfb75QWWoHk0jJNOYJVLXy_zjpYw2rnpoxoWJt_Z6tKC-NfWpQyjvh7TPdfzwLXigS5hbuhEuaTX65dUVYTehfzOOMLaknEUO0M_P1v1SOgIR1xriMaI0kNpN--eOvDO-_YXiouJBjB-qF-87x4DEgtfLlAD5UfhXmhkIW_0zNhLcmv2gBxcHe53kjki6oKFIAESN0dvL27BM_B5U_cksjymx0Lk49OGf8y7I3GHc7Ftsm36ynC3RPtmE79f4nE5n1_zuJ9lA48bbbRfZYTqfn3I-0CODgdRn2z21htynBGJotd4GtuGaQ0I/p.png");
+  background-size: cover;
+  height: 100vh;
+  background-color: #2b2b2b;
+`;
 
 const Container = styled.div`
   width: 1080px;
@@ -181,16 +214,19 @@ const Container = styled.div`
 
 const OtherUsers = styled.div`
   width: 100%;
-  height: 214px;
+  height: 200px;
   display: flex;
   justify-content: space-between;
 `;
 
 const OtherUser = styled.div`
-  width: 353px;
+  width: 356px;
   height: 100%;
-  background-color: #ebebeb;
-  padding: 20px;
+  background-image: url(${otherUserBackground});
+  padding: 16px;
+  border-radius: 6px;
+  border: solid 1px #111;
+  background-color: #eee;
 `;
 
 const UserInfo = styled.div`
@@ -200,106 +236,182 @@ const UserInfo = styled.div`
 `;
 
 const Camera = styled.div`
-  width: 172px;
-  height: 107px;
-  border: 1px solid green;
+  width: 200px;
+  height: 112px;
+  border-radius: 4px;
+  border: solid 1px #999;
+  background-color: #555;
+
+  padding: 6px;
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+const SpaceBetween = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const CameraStatus = styled.div`
+  gap: 10px;
+  width: 40px;
+  & img {
+    height: 16px;
+    margin-right: 3px;
+  }
+`;
+
+const GameStatus = styled.div`
+  width: 46px;
+  height: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background-color: #ffdf24;
+
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  color: #000;
+`;
+
+const UserName = styled.div`
+  width: 64px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background-color: rgba(0, 0, 0, 0.7);
+  & div {
+    display: block;
+  }
 `;
 
 const SelectBtn = styled.button`
-  border: 1px solid #888888;
-  border-radius: 6px;
-  width: 55px;
-  height: 31px;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 17px;
+  width: 93px;
+  height: 32px;
   display: flex;
-  align-items: center;
+  flex-direction: row;
   justify-content: center;
-  color: #888888;
-`;
-
-const NickName = styled.div`
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 14px;
-  display: flex;
   align-items: center;
+  border-radius: 6px;
+  box-shadow: 0 3px 0 0 #616161;
+  border: solid 1px #616161;
+  background-color: #ddd;
+
+  //
+  font-family: Pretendard;
+  font-size: 14px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
   text-align: center;
-  color: #1b1b1b;
-  margin-top: 6px;
-  margin-bottom: 13px;
+  color: #616161;
 `;
 
 const CardArea = styled.div`
   width: 100%;
-  height: 34px;
-  gap: 4px;
+  height: 32px;
+  gap: 2px;
   display: flex;
+  margin: 20px 7px;
 `;
 
-const Card = styled.div`
-  width: 25px;
-  height: 100%;
-  background-color: ${(props) => props.backgroundColor || "#515151"};
-  color: ${(props) => props.color || "white"};
-  border: 1px solid #c5c5c5;
+const Card = styled.img`
+  /* width: 25px;
+  height: 100%; */
+  /* background-color: ${(props) => props.backgroundColor || "#515151"};
+  color: ${(props) => props.color || "white"}; */
 `;
 
 /////////// 유저들 칸
 
 const CardBox = styled.div`
-  height: 344px;
+  height: 364px;
   border: 1px solid #c2c2c2;
   width: 100%;
   margin-top: 8px;
+  border-radius: 6px;
+  border: solid 1px #111;
+  background-color: #fff;
+`;
+
+const GameField = styled.div`
+  width: 100%;
+  height: 324px;
 `;
 
 const OnGoingStatus = styled.div`
+  margin: 10px;
   background: #eeeeee;
-  width: 124px;
-  height: 25px;
-  color: #555555;
-  font-weight: 500;
-  font-size: 10px;
-  line-height: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  padding: 4px 16px;
+  border-radius: 6px;
+  border: solid 1px #111;
+  background-color: #111;
+
   left: 0;
   top: 0;
+  color: #ffdf24;
+  font-family: Pretendard;
+  font-size: 10px;
+  font-weight: 500;
+  display: inline-block;
 `;
 
-const MiddleField = styled.div`
-  width: 100%;
+const Timer = styled.div`
+  height: 40px;
+  border-top: solid 1px #ccc;
+  background-color: #e1e1e1;
+  border-radius: 0 0 6px 6px;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  //이거 조절나중에
-  margin-top: 30px;
+
+  gap: 5px;
+  font-family: Pretendard;
+  font-size: 10px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #222;
 `;
 
-const GameText = styled.div`
-  font-weight: 700;
-  font-size: 22px;
-  line-height: 26px;
-  color: #1b1b1b;
-  margin-bottom: 27px;
+const TimerBar = styled.div`
+  width: 486px;
+  height: 16px;
+  border: solid 1px #000;
+  background-color: #fff;
+  border-radius: 4px;
 `;
 
-const StBox = styled.div`
-  border: 1px solid green;
-  width: 278px;
-  height: 183px;
+const TimeLimit = styled.div`
+  height: 100%;
+  width: 400px;
+  background-color: #009320;
+  border-radius: 3px 0 0 3px;
 `;
 
 ///// 중간끝
 
 const Footer = styled.div`
   width: 100%;
-  height: 201px;
+  height: 200px;
   margin-top: 9px;
 
   display: flex;
@@ -308,95 +420,113 @@ const Footer = styled.div`
 
 const Left = styled.div`
   height: 100%;
-  width: 727px;
-  background-color: #ebebeb;
-  padding: 22px;
+  width: 714px;
+  background-image: url(${myUserBackground});
+  padding: 20px 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border-radius: 6px;
+  border: solid 1px #111;
+  background-color: #eee;
+`;
+
+const Flex = styled.div`
+  display: flex;
+`;
+
+const MyCard = styled.div`
+  border: 1px solid green;
+  margin-top: 24px;
+  margin-left: 14px;
+  width: 100%;
+`;
+
+const MyCardList = styled.div`
+  height: 32px;
+  & img {
+  }
 `;
 
 const BtnList = styled.div`
-  width: 130px;
+  width: 200px;
   height: 36px;
-  background-color: #e8e8e8;
-  border: 1px solid #d2d2d2;
-  border-radius: 6px;
+  background-color: #fff;
+  border-radius: 4px;
+  border: solid 1px #aaa;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0px 15px;
+  padding: 0px 24px;
   & div {
     font-size: 16px;
-    color: #d2d2d2;
+    color: #aaa;
   }
-  & button {
-    border: none;
-    background-color: transparent;
-    font-size: 16px;
+  & img {
+    cursor: pointer;
   }
 `;
 
 const Right = styled.div`
   height: 100%;
-  width: 339px;
-  border: 1px solid #c2c2c2;
-  border-radius: 10px;
+  width: 356px;
+  border-radius: 6px;
+  border: 1px solid #111;
 `;
 
 const Chat = styled.div`
-  background-color: #ebebeb;
+  background-color: #fff;
   width: 100%;
-  height: 132px;
-  border-radius: 10px 10px 0 0;
-  padding: 21px 33px;
+  height: 138px;
+  border-radius: 6px 6px 0 0;
+  padding: 9px 0 0 20px;
 `;
 
 const InputArea = styled.div`
-  background-color: #e1e1e1;
+  background-color: #555;
   width: 100%;
-  height: 69px;
+  height: 62px;
   display: flex;
   gap: 4px;
-  border-radius: 0 0 10px 10px;
-  padding-top: 20px;
-  padding-left: 16px;
+  border-radius: 0 0 6px 6px;
+  padding: 10px;
+`;
+
+const InputBox = styled.div`
+  width: 336px;
+  height: 40px;
+  border-radius: 4px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 14px;
+  & img {
+    cursor: pointer;
+  }
 `;
 
 const Input = styled.input`
-  width: 251px;
-  height: 32px;
-  background: #fbfbfb;
-  border-radius: 3px;
   border: none;
-  padding-left: 15px;
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 500;
+  width: 270px;
+  color: #7a7a7a;
   &:focus {
     outline: none;
   }
 `;
 
-const InputBtn = styled.button`
-  width: 56px;
-  height: 32px;
-  background-color: #b5b5b5;
-  border-radius: 3px;
-  font-weight: 700;
-  font-size: 10px;
-  line-height: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: none;
-`;
-
 const Chatting = styled.div`
   font-size: 12px;
-  line-height: 140%;
   & div:nth-child(1) {
     font-weight: 700;
+    margin-bottom: 6px;
   }
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 `;
 
 export default Game;

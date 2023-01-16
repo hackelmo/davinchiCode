@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import iconLock from "../../../assets/icons/ico_lock_white.svg";
+import iconSiren from "../../../assets/icons/ico_siren_white.svg";
 
 const Header = () => {
   return (
@@ -7,16 +9,22 @@ const Header = () => {
       <NavbarInside>
         <NavbarStatus>
           <RoomStauts>
-            <div>
-              <span className="material-symbols-outlined">lock</span>
-            </div>
             <RoundStatus>1/4</RoundStatus>
             <RoundStatus>진행</RoundStatus>
+            <img src={iconLock} />
           </RoomStauts>
-          <RoomName>초보자 환영! 같이 즐기면서 배워요</RoomName>
+          <SideBar>|</SideBar>
+          <div>1234566</div>
+          <SideBar>|</SideBar>
+          <RoomName>
+            초보자 환영! 같이 배우면서 즐겨요. 상대방의 비밀 암호를 추리해
+            블럭을 맞춰보세요!
+          </RoomName>
         </NavbarStatus>
+
         <ReportButton>
-          <span className="material-symbols-outlined">sms_failed</span>버그신고
+          <img src={iconSiren} />
+          <div>버그신고</div>
         </ReportButton>
       </NavbarInside>
     </Navbar>
@@ -28,6 +36,7 @@ export default Header;
 const Navbar = styled.div`
   color: #ffffff;
   background-color: #111;
+  color: #aaaaaa;
   height: 40px;
   display: flex;
   align-items: center;
@@ -44,25 +53,24 @@ const NavbarInside = styled.div`
 
 const RoomName = styled.div`
   font-family: Pretendard;
+  color: #ffffff;
   font-size: 14px;
   font-weight: 500;
-  margin-left: 20px;
 `;
 
 const NavbarStatus = styled.div`
   display: flex;
-  height: 21px;
   align-items: center;
+  gap: 9px;
 `;
 
 const RoomStauts = styled.div`
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 `;
 
 const ReportButton = styled.div`
-  //
   display: flex;
   justify-content: center;
   align-items: center;
@@ -76,13 +84,10 @@ const ReportButton = styled.div`
 
   font-family: "Pretendard";
   font-style: normal;
-  font-weight: 600;
-  font-size: 10px;
-  line-height: 12px;
   font-weight: bold;
-  & span {
+  gap: 2px;
+  & div {
     font-size: 12px;
-    margin-right: 5px;
   }
   cursor: pointer;
 `;
@@ -98,4 +103,8 @@ const RoundStatus = styled.div`
   font-weight: 500;
   font-size: 10px;
   line-height: 100%;
+`;
+
+const SideBar = styled.div`
+  color: #333;
 `;
