@@ -6,8 +6,8 @@ import Header from "../../components/common/elements/Header";
 
 import GameStart from "./logic/GameStart";
 import NotMyTurn from "./logic/NotMyTurn";
-import myUserBackground from "../../assets/img/myUserBackground.png";
-import otherUserBackground from "../../assets/img/otherUserBackground.png";
+import myUserBackground from "../../assets/images/myUserBackground.png";
+import otherUserBackground from "../../assets/images/otherUserBackground.png";
 
 import iconSetting from "../../assets/icons/ico_setting.svg";
 import iconVideocam from "../../assets/icons/ico_videocam.svg";
@@ -32,7 +32,7 @@ const Game = () => {
   const createdAt = new Date().toLocaleString();
   const users = [1, 2, 3];
   const people = 4;
-
+  console.log("as");
   const modeGameStart = () => {
     setMode("gameStart");
     console.log("socket.on => gameStart /// self", userId);
